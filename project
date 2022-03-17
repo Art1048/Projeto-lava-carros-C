@@ -1,0 +1,482 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h> //Biblioteca para utilização da função sleep()
+
+void Press(){
+  printf("\n \n Precione qualquer tecla para continuar:");
+  getchar(); 
+}
+
+void CleanBuff() {// Função responsavel para limpar o buufer
+  char x;
+  while (((x = fgetc(stdin)) != '\n') && (x != EOF));
+}
+
+
+struct Tcarros{ //Struct de Cadastro de Carros no Sistema.
+  char dono[60] , 
+  modelo[60], 
+  marca[60] , 
+  placa[9];
+};
+
+void Caminhão(){ // Desenho para embelezamento. 
+  printf("      ____        \n");
+  printf(" ____//_]|________\n");
+  printf("(o _ |  -|   _  o|\n");
+  printf(" `(_)-------(_)--'\n");
+}
+
+void Carro(){ // Desenho para embelezamento.
+  printf("      _____________\n");
+  printf(" ____//__][__][__]|\n");
+  printf("(o  _|  -|     _ o|\n");
+  printf(" `-(_)--------(_)-'\n");  
+}
+
+void LoadCar1(){ // Desenho para Animação.
+  printf(" ____/   ___\n");
+  printf("|'_   \\__' _\\\n");
+  printf("`-(*)----(*)'\n");
+}
+
+void LoadCar2(){ // Desenho para Animação.
+  printf("    ____      \n");
+  printf(" __/___/______ \n");
+  printf("|_ \\__'   \\""  _ ""\\\n");
+  printf("`())--,())'- ,,'\n");
+}
+
+void LoadCar3(){ // Desenho para Animação.
+  printf("   ____    \n");
+  printf(" _/____]__ \n");
+  printf("|_v'_]"" __"" ]\n");
+  printf("`UJ-uJ--uJ \n");
+}
+
+void LoadCar4(){ // Desenho para Animação.
+  printf(" _____ \n");
+  printf("i_____i\n");
+  printf("["" ___ ""]\n");
+  printf("|J---L|\n");
+}
+
+void ByeBye(){ // Animação de encerramento do Programa.
+  printf(" _____ \n");
+  printf("i_____i \n");
+  printf("["" ___ ""]\n");
+  printf("|J---L|                      웃\n");
+  sleep(1);
+  system("clear");
+  printf(" _____ \n");
+  printf("i_____i \n");
+  printf("["" ___ ""]\n");
+  printf("|J---L|              웃\n");
+  sleep(1);
+  system("clear");
+  printf(" _____ \n");
+  printf("i_____i \n");
+  printf("["" ___ ""]\n");
+  printf("|J---L| 웃\n");
+  sleep(1);
+  system("clear");
+  printf(" _____ \n");
+  printf("i_____i \n");
+  printf("["" ___ ""]\n");
+  printf("|J---L|\n");
+  printf("\n Bye Bye \n");
+  sleep(1);
+  system("clear");
+}
+
+void Load(){ // Animação de Lavagem de Carro.
+  
+    system("clear");
+    LoadCar1();
+    printf("\n |                               |  0%%\n");
+    sleep(1);
+    system("clear");
+    LoadCar2();
+    printf("\n |█████████                      |  25%%\n");
+    sleep(1);
+    system("clear");
+    LoadCar3();
+    printf("\n |█████████████████              |  50%%\n");
+    sleep(1);
+    system("clear");
+    LoadCar4();
+    printf("\n |████████████████████████       |  75%%\n");
+    sleep(1);
+    system("clear");
+    LoadCar1();
+    printf("\n |███████████████████████████████|  100%%\n");
+}
+ 
+
+
+void Menu(int *op) { // Menu Principal
+
+  system("clear");
+  LoadCar1();
+  printf("\nCaRrEgAnDo.'.'.\n");
+  sleep(1);
+  system("clear");
+  LoadCar2();
+  printf("\ncArReGaNdO'.'.'\n");
+  sleep(1);
+  system("clear");
+  LoadCar3();
+  printf("\nCaRrEgAnDo.'.'.\n");
+  sleep(1);
+  system("clear");
+  LoadCar4();
+  printf("\ncArReGaNdO'.'.'\n");
+  sleep(1);
+  system("clear");
+
+ printf("\n _________________________________\n");
+ printf(" |        |MENU LAVACAR|         | \n |1-Adicionar carro na fila      | \n |2-Lavar carro (lava o primeiro)| \n |3-Consultar fila de lavagem    | \n |4-Consultar fila de espera     | \n |5-Encerrar                     |");
+ printf("\n _________________________________\n");
+ printf(" \n Selecione uma opção: ");
+ scanf("%d", op);
+
+}
+
+
+
+void addCar(int *fila ,int *numC , int i ){ // Função que muda o valor de fila ou fila2
+
+  *fila = *fila + 1; //Valor da fila almentado(de Espera ou Principal dependendo do parametro passado)
+
+  switch(i){ // Variavel i diferencia se o Carro foi adicionado a fila principal ou a fila de Espera 
+
+    case 1:{
+       printf("\n Carro adicionado a fila.\n");
+       break;
+    }
+
+    case 2:{
+       printf("\n Carro adicionado a fila de Espera.\n");
+       break;
+    }
+  }
+   
+}
+
+
+
+void lavarCar(int *fila , int *fila2, int *c , int *z , struct Tcarros Carros[] , struct Tcarros Espera[]){ // Função responsavel por lavar o primeiro Carro da fila Principal e mover os Carros para o andamento da fila , tanto da fila de espera(se ouver carros), quanto da fila Principal.
+
+//Passagem dos paremetros por referencia, Vetores passados normalmento por já serem tratados como ponteiros naturalmente.
+
+  int i = 0;
+
+    if (*fila != 0){ // Existe Carros na fila Principal ?
+
+      if(*fila2 != 0){ // Existe Carros na fila Principal na fila de Espera?
+
+      
+        do{
+
+          Carros[i] = Carros[i + 1]; // movimentação dos carros na fila principal
+
+          i++;
+
+        }while(i<=*fila);
+       
+       Carros[*fila - 1] = Espera[0];// Primeiro Carro da fila de Espera se torna o ultimo da fila Principal
+
+
+        for(i = 0; i < *fila2; i++){
+        Espera[i] = Espera[i + 1];// movimentação dos carros na fila de Espera
+        }
+
+       *fila2 = *fila2 - 1;// Valor da fila de Espera Reduzido
+       *z = *z - 1;// Valor do Vetor de Espera reduzido para evitar comflitos ao adicionar um novo Carro
+
+       Load(); // chamada da animção.
+
+       printf("\n Lavagem do primeiro carro da fila concluida com sucesso.\n");
+    }
+
+    else{// não há carros na fila de Espera
+      for(int i = 0; i < *fila;i++){
+        Carros[i] = Carros[i + 1];// movimentação dos carros na fila principal
+         
+      }
+      *fila = *fila - 1;// Valor da fila de Principal Reduzido
+      *c = *c - 1; // Valor do Vetor Principal reduzido para evitar comflitos ao adicionar um novo Carro
+
+      Load();// chamada da animção.
+
+      printf("\n Lavagem do primeiro carro da fila concluida com sucesso.\n");
+    }
+ }
+ else{// Não existe nenhum Carro na fila.
+    printf("\n Nenhum Carro na Fila.\n");
+    }
+}
+
+
+
+void consFila(int *fila ,struct Tcarros aux[]){// Visualização de todos os Carros presentes na fila Principal e de Espera
+  
+  if(*fila != 0){
+  for(int i= 0 ; i < *fila; i++){
+    printf("Carro %d \n", i+1);
+    printf("\n");
+    printf("Dono: %s \n" , aux[i].dono);
+    printf("Placa: %s \n" , aux[i].placa);
+    printf("Modelo: %s \n" , aux[i].modelo);
+    printf("Marca: %s \n \n" , aux[i].marca);
+  }
+  }
+  else{
+    printf("Fila Vazia...");
+  }
+}
+
+
+
+void Enc(){ //Encerramento do Programa 
+  ByeBye();// Chamada da animação de Encerramento
+  printf("\n Programa Encerrado.\n \n ARTHUR HENRIQUE COSTA NUNES || RA: 2250306");
+}
+
+
+
+void OpInvalida(){
+  printf("¯ \\ _ (ツ) _ / ¯\n");
+  printf("\n Operação invalida.\n");
+}
+
+
+
+struct Tcarros criaCarro(){ //Criação de um novo Carro.
+   
+   struct Tcarros aux;
+  
+  printf("Informe a placa do veiculo:");
+  scanf("%s", aux.placa);
+  printf("Informe o nome do proprietario do veiculo:");
+  CleanBuff();
+  fgets(aux.dono, 100, stdin);
+  printf("Informe o modelo do veiculo:");
+  scanf("%s", aux.modelo);
+  printf("Informe a marca do veiculo:");
+  scanf("%s", aux.marca);
+  
+
+  return aux;
+
+}
+
+
+
+int main(void) { 
+
+  int numC, op, fila, fila2, i = 0 , c = 0 , flag = 0 , flag2 = 1;
+
+  struct Tcarros *Carros;//Vetor de Carros Referente a fila Principal
+  struct Tcarros Espera[3];//Vetor de Carros Referente a fila de Espera
+
+  fila = 0;
+  fila2 = 0;
+  printf("\n|Bem vindo ao Lava Carros|\n \n Informe quantos carros estarão na Fila de lavagem:");
+
+  do{
+  scanf("%d", &numC);
+
+    if (numC <= 0){
+
+      printf("Digite um numero maior que 0:");
+
+    }
+  }while(numC <= 0);
+
+
+  Carros = (struct Tcarros *) malloc(numC * sizeof(struct Tcarros));// Tamanho do Vetor Principal é Escolhido pelo usuario.
+
+  system("clear");
+  printf("\n A fila será composta por %d carros. \n", numC);
+
+  for(int t = 0; t < numC; t++){// Mostra Carros de acordo com o numero de Carros que vão compor a fila.
+
+    if(flag2 == 1){
+       Carro();
+       flag2 = 2;
+    }
+    else{
+      Caminhão();
+      flag2 = 1;
+    }
+  
+  }
+
+  Press();
+
+  scanf("c\n"); 
+  CleanBuff(); //Chama a Função para limpar o buffer assim evitando problemas na utilização do getchar
+  system("clear");
+
+ do{
+  
+  Menu(&op);
+  system("clear");
+
+  switch(op){
+
+  case 1:{
+      
+    if (fila<numC){ // Existe espaço na fila Principal?
+
+      if(flag2 == 1){
+      Carro();
+      flag2 = 2;
+      }
+      else{
+        Caminhão();
+        flag2 = 1;
+      }
+      printf("\n");
+    
+
+    Carros[c] = criaCarro();
+    c++;
+    flag = 1;
+    addCar(&fila , &numC , flag);
+}
+  else{
+
+      if(flag2 == 1){
+        Carro();
+      flag2 = 2;
+      }
+      else{
+        Caminhão();
+        flag2 = 1;
+      }
+      printf("\n");
+    
+
+    printf("\nFila Principal Cheia.\n\nAdicionando Carro na Fila de Espera : \n");
+    
+      if(fila2<3){// Existe espaço na fila de Espera?
+
+        if(flag2 == 1){
+          Carro();
+        flag2 = 2;
+        }
+        else{
+          Caminhão();
+          flag2 = 1;
+        }
+      printf("\n");
+      
+
+    flag = 2;
+    Espera[i] = criaCarro();
+    i++;
+    addCar(&fila2, &numC , flag);
+    }
+    else{
+      printf("\nFila de Espera Cheia.\n");
+    }
+  }
+
+
+    Press(); 
+    scanf("c\n"); 
+    CleanBuff();
+    system("clear");
+
+
+    break;
+  }
+
+  case 2:{
+      lavarCar(&fila , &fila2 , &c , &i , Carros , Espera);
+
+
+      Press(); 
+      scanf("c\n"); 
+      CleanBuff();
+      system("clear");
+
+
+      break;
+  }
+
+  case 3:{
+
+      if(flag2 == 1){
+        Carro();
+      flag2 = 2;
+      }
+      else{
+        Caminhão();
+        flag2 = 1;
+      }
+  
+    
+
+
+      consFila(&fila , Carros);
+
+
+      Press();
+      scanf("c\n"); 
+      CleanBuff();
+      system("clear");
+
+
+      break;
+  }
+
+  case 4:{
+
+      if(flag2 == 1){
+        Carro();
+      flag2 = 2;
+      }
+      else{
+        Caminhão();
+        flag2 = 1;
+      }
+  
+    
+
+
+      consFila(&fila2 , Espera);
+
+
+      Press(); 
+      scanf("c\n"); 
+      CleanBuff();
+      system("clear");
+
+
+      break;
+  }
+
+  case 5:{
+      CleanBuff();
+      system("clear");
+
+      Enc();
+
+      break;
+  }
+
+  default:{
+      OpInvalida();
+      Press();
+      scanf("c\n"); 
+      CleanBuff();
+      system("clear");
+      break;
+  }
+  }
+}while(op != 5);
+return 0;
+}
